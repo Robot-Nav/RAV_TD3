@@ -7,9 +7,10 @@
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB.svg)](https://www.python.org)
 > 基于 RAV-TD3 (Risk-Aware Voting TD3) 算法的端到端无人车导航解决方案
 
-> 注意：goal_box的gazebo模型可视化有bug，可视化的goal与真实的goal坐标偶尔会出现不同步的情况，以终端打印的goal坐标为准。
-
 > 持续更新中，算法持续优化中
+
+> 说明：goal_box的gazebo模型可视化有bug，可视化的goal与真实的goal坐标偶尔会出现不同步的情况，以终端打印的goal坐标为准。
+
 ---
 
 ## 目录
