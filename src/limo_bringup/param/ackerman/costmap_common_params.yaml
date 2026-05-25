@@ -1,0 +1,23 @@
+
+#---standard pioneer footprint---
+#---(in meters)---
+footprint: [[-0.16, -0.11], [-0.16, 0.11], [0.16, 0.11], [0.16, -0.11]]
+footprint_padding: 0.02
+
+transform_tolerance: 0.2
+map_type: costmap
+#导航包所需要的传感器
+observation_sources: limo/scan
+#对传感器的坐标系和数据进行配置。这个也会用于代价地图添加和清除障碍物。例如，你可以用激光雷达传感器用于在代价地图添加障碍物，再添加kinect用于导航和清除障碍物。
+scan: {sensor_frame: laser, data_type: LaserScan, topic: limo/scan, marking: true, clearing: true}
+
+
+
+inflation_layer:
+  enabled:              true
+  cost_scaling_factor:  10.0  # exponential rate at which the obstacle cost drops off (default: 10)
+  inflation_radius:     0.1  # max. distance from an obstacle at which costs are incurred for planning paths.
+  inflation_unknow: true
+static_layer:
+  enabled:              true
+  map_topic:            "map"

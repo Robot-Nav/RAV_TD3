@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+================================================================================
+RAV-TD3 测试启动文件 (limo_TD3_test.launch)
+================================================================================
+功能说明：
+  本启动文件用于启动RAV-TD3 (Risk-Aware Voting TD3) 算法的测试节点，
+  加载预训练模型进行策略评估，支持指定测试轮次和测试回合数。
+
+使用方式：
+  roslaunch limoRL limo_TD3_test.launch episode:=500
+  roslaunch limoRL limo_TD3_test.launch episode:=500 test_episodes:=50
+
+参数说明：
+  - episode: 要加载的模型轮次，-1表示加载最新模型
+  - test_episodes: 测试回合数，默认20回合
+  - max_steps: 每回合最大步数，默认1200步
+================================================================================
+-->
+<launch>
+    <!-- 测试参数：模型加载与测试控制 -->
+    <arg name="episode" default="4620"/>
+    <arg name="model_select_mode" default="best"/>
+    <arg name="test_episodes" default="20"/>
+    <arg name="max_steps" default="1200"/>
+
+    <!-- 主测试节点：TD3算法测试进程 -->
+    <node pkg="limoRL" name="limo_td3_test" type="limo_td3_test.py" output="screen">
+        <!-- 测试控制参数 -->
+        <param name="episode"             value="$(arg episode)"/>
+        <param name="model_select_mode"   value="$(arg model_select_mode)"/>
+        <param name="test_episodes"       value="$(arg test_episodes)"/>
+        <param name="max_steps"           value="$(arg max_steps)"/>
+
+        <!-- 环境参数：目标点管理与采样策略 -->
+        <param name="random_goal_on_reset"        value="true"/>
+        <param name="goal_reset_interval"         value="1"/>
+        <param name="goal_min_x"                  value="-6.2"/>
+        <param name="goal_max_x"                  value="6.2"/>
+        <param name="goal_min_y"                  value="-2.9"/>
+        <param name="goal_max_y"                  value="7.8"/>
+        <param name="goal_z"                      value="0.00"/>
+        <param name="goal_boundary_margin"        value="0.40"/>
+        <param name="goal_clearance"              value="0.20"/>
+        <param name="goal_min_clearance"          value="0.05"/>
+        <param name="spawn_clearance"             value="1.0"/>
+        <param name="max_goal_sample_trials"      value="400"/>
+        <param name="random_candidate_samples"    value="140"/>
+        <param name="min_goal_switch_distance"    value="0.9"/>
+        <param name="goal_update_retries"         value="4"/>
+        <param name="goal_verify_tolerance"       value="0.08"/>
+        <param name="model_states_wait_timeout"   value="2.5"/>
+        <param name="allow_random_goal_fallback"  value="true"/>
+
+        <!-- 感知参数：激光雷达扇区划分与风险检测 -->
+        <param name="scan_num_sectors"            value="36"/>
+        <param name="collision_risk_range"        value="0.85"/>
+
+        <!-- 奖励函数参数：多目标奖励权重配置 -->
+        <param name="goal_reward_scale"           value="22.0"/>
+        <param name="heading_reward_scale"        value="1.6"/>
+        <param name="clearance_reward_scale"      value="2.0"/>
+        <param name="turn_reward_scale"           value="1.2"/>
+        <param name="smooth_penalty_scale"        value="0.25"/>
+
+        <!-- 安全参数：碰撞检测与到达判定 -->
+        <param name="collision_range"             value="0.18"/>
+        <param name="goal_tolerance"              value="0.35"/>
+
+        <!-- 卡死检测参数 -->
+        <param name="progress_epsilon"            value="0.008"/>
+        <param name="max_no_progress_steps"       value="140"/>
+
+        <!-- 动作空间参数：网络输出范围定义 -->
+        <param name="action_v_max"                value="0.65"/>
+        <param name="action_w_max"                value="1.5"/>
+
+        <!-- 感知参数：前方扇区与减速策略 -->
+        <param name="front_sector_half_width"     value="3"/>
+        <param name="min_valid_scan"              value="0.16"/>
+        <param name="emergency_stop_range"        value="0.16"/>
+        <param name="slowdown_range_1"            value="0.24"/>
+        <param name="slowdown_speed_1"            value="0.08"/>
+        <param name="slowdown_range_2"            value="0.45"/>
+        <param name="slowdown_speed_2"            value="0.22"/>
+
+        <!-- 运动学约束：速度限幅与变化率限制 -->
+        <param name="max_cmd_linear"              value="0.65"/>
+        <param name="max_cmd_angular"             value="1.5"/>
+        <param name="max_cmd_delta_linear"        value="0.10"/>
+        <param name="max_cmd_delta_angular"       value="0.30"/>
+
+        <!-- 异常检测边界 -->
+        <param name="max_valid_position_abs"      value="30.0"/>
+        <param name="max_valid_goal_distance"     value="80.0"/>
+
+        <!-- 优化器参数：学习率配置 -->
+        <param name="alpha"                       value="0.0001"/>
+        <param name="beta"                        value="0.0001"/>
+
+        <!-- 网络结构参数：必须与训练时完全一致 -->
+        <param name="actor_fc1_dim"               value="512"/>
+        <param name="actor_fc2_dim"               value="256"/>
+        <param name="critic_fc1_dim"              value="512"/>
+        <param name="critic_fc2_dim"              value="256"/>
+    </node>
+
+    <!-- RViz 可视化 -->
+    <node pkg="rviz" type="rviz" name="limorl_rviz" args="-d $(find limoRL)/config/limorl.rviz" output="screen"/>
+
+    <!-- 可选辅助节点：单元测试节点（默认禁用） -->
+    <!-- <node pkg="limoRL" name="unit_1" type="unit_1.py" output="screen"/> -->
+</launch>

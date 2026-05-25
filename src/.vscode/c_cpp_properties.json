@@ -1,0 +1,33 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/jiuwei/turtlebot3_ws/devel/include/**",
+        "/home/jiuwei/catkin_ws/devel/include/**",
+        "/opt/ros/noetic/include/**",
+        "/home/jiuwei/catkin_ws/src/apriltag_ros/apriltag_ros/include/**",
+        "/home/jiuwei/catkin_ws/src/gtihub/guyue/include/**",
+        "/home/jiuwei/catkin_ws/src/study/guyue_action/include/**",
+        "/home/jiuwei/limo_ws/src/limo_courses/gazebo_simulation/src/limo_dqn/include/**",
+        "/home/jiuwei/limo_ws/src/limo_courses/gazebo_simulation/src/limo_gazebo_sim/include/**",
+        "/home/jiuwei/catkin_ws/src/robot_mrobot/mrobot_bringup/include/**",
+        "/home/jiuwei/catkin_ws/src/gtihub/multi_diffcar_ws/src/nmpc_ctr/include/**",
+        "/home/jiuwei/turtlebot3_ws/src/turtlebot3_simulations/turtlebot3_fake/include/**",
+        "/home/jiuwei/turtlebot3_ws/src/turtlebot3_simulations/turtlebot3_gazebo/include/**",
+        "/home/jiuwei/turtlebot3_ws/src/turtlebot3/turtlebot3_slam/include/**",
+        "/home/jiuwei/catkin_ws/src/wpr_simulation-master/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}
