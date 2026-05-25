@@ -1,5 +1,10 @@
 # 基于RAV-TD3的无人车自主导航与动态避障系统
-
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![RAV-TD3](https://img.shields.io/badge/Algorithm-RAV-TD3-orange.svg)](https://arxiv.org/abs/1802.09477)
+[![Gazebo](https://img.shields.io/badge/Gazebo-11+-green.svg)](http://gazebosim.org)
+[![ROS](https://img.shields.io/badge/ROS-Noetic/Melodic-blue.svg)](https://www.ros.org)
+[![Python](https://img.shields.io/badge/Python-3.8+-yellow.svg)](https://www.python.org)
+[![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey.svg)](https://ubuntu.com)
 > 基于 RAV-TD3 (Risk-Aware Voting TD3) 算法的端到端无人车导航解决方案
 
 > 注意：goal_box的gazebo模型可视化有bug，可视化的goal与真实的goal坐标偶尔会出现不同步的情况，以终端打印的goal坐标为准。
@@ -1400,7 +1405,7 @@ GNU通用公共许可证（第三版或其任何更新版本）的条款，
 
 ---
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 
 *本项目遵循GNU通用公共许可证v3.0 — 详见[开源协议](#16-开源协议)章节。*
 
