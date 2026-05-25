@@ -1,10 +1,10 @@
 # 基于RAV-TD3的无人车自主导航与动态避障系统
+[![RAV-TD3](https://img.shields.io/badge/Project-RAV--TD3-red.svg)](https://github.com/Robot-Nav/RAV_TD3)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![RAV-TD3](https://img.shields.io/badge/Algorithm-RAV-TD3-orange.svg)](https://arxiv.org/abs/1802.09477)
-[![Gazebo](https://img.shields.io/badge/Gazebo-11+-green.svg)](http://gazebosim.org)
-[![ROS](https://img.shields.io/badge/ROS-Noetic/Melodic-blue.svg)](https://www.ros.org)
-[![Python](https://img.shields.io/badge/Python-3.8+-yellow.svg)](https://www.python.org)
-[![Platform](https://img.shields.io/badge/Platform-Linux-lightgrey.svg)](https://ubuntu.com)
+[![TD3](https://img.shields.io/badge/Algorithm-TD3-orange.svg)](https://arxiv.org/abs/1802.09477)
+[![Gazebo](https://img.shields.io/badge/Simulation-Gazebo-4298B4.svg)](http://gazebosim.org)
+[![ROS](https://img.shields.io/badge/ROS-Noetic-22314E.svg)](https://www.ros.org)
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB.svg)](https://www.python.org)
 > 基于 RAV-TD3 (Risk-Aware Voting TD3) 算法的端到端无人车导航解决方案
 
 > 注意：goal_box的gazebo模型可视化有bug，可视化的goal与真实的goal坐标偶尔会出现不同步的情况，以终端打印的goal坐标为准。
