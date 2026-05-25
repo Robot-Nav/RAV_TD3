@@ -1,6 +1,3 @@
-
-https://github.com/user-attachments/assets/6b18b180-5952-46c2-a1e0-15915dc91f4d
-
 # 基于RAV-TD3的无人车自主导航与动态避障系统
 
 > 基于 RAV-TD3 (Risk-Aware Voting TD3) 算法的端到端无人车导航解决方案
