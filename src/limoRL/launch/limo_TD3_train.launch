@@ -1,122 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!--
 ================================================================================
 RAV-TD3 训练启动文件 (limo_TD3_train.launch)
 ================================================================================
 功能说明：
-  本启动文件用于启动RAV-TD3 (Risk-Aware Voting TD3) 算法的训练节点，
-  包含完整的训练参数配置，支持自适应OU噪声、优先经验回放(PER)、
-  课程学习等高级特性。
+    本启动文件用于启动RAV-TD3 (Risk-Aware Voting TD3) 算法的训练节点，
+    包含完整的训练参数配置，支持自适应OU噪声、优先经验回放(PER)、
+    课程学习和随机种子配置等特性。
 
 使用方式：
-  roslaunch limoRL limo_TD3_train.launch
+    roslaunch limoRL limo_TD3_train.launch
+
+指定随机种子：
+    roslaunch limoRL limo_TD3_train.launch seed:=0
 ================================================================================
 -->
+
 <launch>
     <!-- 阶段参数：用于多阶段课程学习，区分不同训练阶段的环境复杂度 -->
     <arg name="stage" default="3"/>
+
+    <!-- 随机种子参数：正式实验可依次使用 0、1、2、3、4 -->
+    <arg name="seed" default="42"/>
+    <arg name="deterministic_training" default="true"/>
+
     <param name="stage_number" value="$(arg stage)"/>
 
     <!-- 主训练节点：TD3算法核心训练进程 -->
-    <node pkg="limoRL" name="limo_td3" type="limo_td3.py" output="screen">
-        <env name="PYTORCH_CUDA_ALLOC_CONF" value="expandable_segments:True,max_split_size_mb:64"/>
+    <node pkg="limoRL"
+          name="limo_td3"
+          type="limo_td3.py"
+          output="screen">
+
+        <env name="PYTORCH_CUDA_ALLOC_CONF"
+             value="expandable_segments:True,max_split_size_mb:64"/>
+
+        <!--
+        PYTHONHASHSEED 必须在 Python 进程启动前设置；
+        CUBLAS_WORKSPACE_CONFIG 用于提高 CUDA 计算的确定性。
+        -->
+        <env name="PYTHONHASHSEED"
+             value="$(arg seed)"/>
+
+        <env name="CUBLAS_WORKSPACE_CONFIG"
+             value=":4096:8"/>
+
+        <!-- 随机种子配置 -->
+        <param name="seed"
+               value="$(arg seed)"/>
+
+        <param name="deterministic_training"
+               value="$(arg deterministic_training)"/>
 
         <!-- 环境参数：目标点管理与采样策略 -->
-        <param name="random_goal_on_reset"        value="true"/>
-        <param name="goal_reset_interval"          value="1"/>
-        <param name="goal_min_x"                   value="-6.2"/>
-        <param name="goal_max_x"                   value="6.2"/>
-        <param name="goal_min_y"                   value="-2.9"/>
-        <param name="goal_max_y"                   value="7.8"/>
-        <param name="goal_z"                       value="0.00"/>
-        <param name="goal_boundary_margin"         value="0.40"/>
-        <param name="goal_clearance"               value="0.20"/>
-        <param name="goal_min_clearance"           value="0.05"/>
-        <param name="spawn_clearance"              value="1.0"/>
-        <param name="max_goal_sample_trials"       value="400"/>
-        <param name="random_candidate_samples"     value="140"/>
-        <param name="min_goal_switch_distance"     value="0.9"/>
-        <param name="goal_update_retries"          value="4"/>
-        <param name="goal_verify_tolerance"        value="0.08"/>
-        <param name="model_states_wait_timeout"    value="2.5"/>
-        <param name="allow_random_goal_fallback"   value="true"/>
+        <param name="random_goal_on_reset" value="true"/>
+        <param name="goal_reset_interval" value="1"/>
+        <param name="goal_min_x" value="-6.2"/>
+        <param name="goal_max_x" value="6.2"/>
+        <param name="goal_min_y" value="-2.9"/>
+        <param name="goal_max_y" value="7.8"/>
+        <param name="goal_z" value="0.00"/>
+        <param name="goal_boundary_margin" value="0.40"/>
+        <param name="goal_clearance" value="0.20"/>
+        <param name="goal_min_clearance" value="0.05"/>
+        <param name="spawn_clearance" value="1.0"/>
+        <param name="max_goal_sample_trials" value="400"/>
+        <param name="random_candidate_samples" value="140"/>
+        <param name="min_goal_switch_distance" value="0.9"/>
+        <param name="goal_update_retries" value="4"/>
+        <param name="goal_verify_tolerance" value="0.08"/>
+        <param name="model_states_wait_timeout" value="2.5"/>
+        <param name="allow_random_goal_fallback" value="true"/>
 
         <!-- 感知参数：激光雷达扇区划分与风险检测 -->
-        <param name="scan_num_sectors"             value="36"/>
-        <param name="collision_risk_range"         value="0.85"/>
-        <param name="front_sector_half_width"      value="3"/>
-        <param name="min_valid_scan"               value="0.16"/>
+        <param name="scan_num_sectors" value="36"/>
+        <param name="collision_risk_range" value="0.85"/>
+        <param name="front_sector_half_width" value="3"/>
+        <param name="min_valid_scan" value="0.16"/>
 
         <!-- 奖励函数参数：多目标奖励权重配置 -->
-        <param name="goal_reward_scale"            value="22.0"/>
-        <param name="heading_reward_scale"         value="1.6"/>
-        <param name="clearance_reward_scale"       value="2.0"/>
-        <param name="turn_reward_scale"            value="1.2"/>
-        <param name="smooth_penalty_scale"         value="0.25"/>
+        <param name="goal_reward_scale" value="22.0"/>
+        <param name="heading_reward_scale" value="1.6"/>
+        <param name="clearance_reward_scale" value="2.0"/>
+        <param name="turn_reward_scale" value="1.2"/>
+        <param name="smooth_penalty_scale" value="0.25"/>
 
         <!-- 安全参数：碰撞检测与到达判定 -->
-        <param name="collision_range"              value="0.18"/>
-        <param name="goal_tolerance"               value="0.35"/>
+        <param name="collision_range" value="0.18"/>
+        <param name="goal_tolerance" value="0.35"/>
 
         <!-- 卡死检测参数：防止agent陷入局部最优 -->
-        <param name="max_no_progress_steps"        value="140"/>
-        <param name="progress_epsilon"             value="0.008"/>
+        <param name="max_no_progress_steps" value="140"/>
+        <param name="progress_epsilon" value="0.008"/>
 
         <!-- 速度规划参数：分层减速策略 -->
-        <param name="emergency_stop_range"         value="0.16"/>
-        <param name="slowdown_range_1"             value="0.24"/>
-        <param name="slowdown_speed_1"             value="0.08"/>
-        <param name="slowdown_range_2"             value="0.45"/>
-        <param name="slowdown_speed_2"             value="0.22"/>
+        <param name="emergency_stop_range" value="0.16"/>
+        <param name="slowdown_range_1" value="0.24"/>
+        <param name="slowdown_speed_1" value="0.08"/>
+        <param name="slowdown_range_2" value="0.45"/>
+        <param name="slowdown_speed_2" value="0.22"/>
 
         <!-- 运动学约束：速度限幅与变化率限制 -->
-        <param name="max_cmd_linear"               value="0.65"/>
-        <param name="max_cmd_angular"              value="1.5"/>
-        <param name="max_cmd_delta_linear"         value="0.10"/>
-        <param name="max_cmd_delta_angular"        value="0.30"/>
+        <param name="max_cmd_linear" value="0.65"/>
+        <param name="max_cmd_angular" value="1.5"/>
+        <param name="max_cmd_delta_linear" value="0.10"/>
+        <param name="max_cmd_delta_angular" value="0.30"/>
 
         <!-- 异常检测边界：防止数值异常 -->
-        <param name="max_valid_position_abs"       value="30.0"/>
-        <param name="max_valid_goal_distance"      value="80.0"/>
+        <param name="max_valid_position_abs" value="30.0"/>
+        <param name="max_valid_goal_distance" value="80.0"/>
 
         <!-- 训练参数：探索策略与训练控制 -->
-        <param name="random_action_steps"          value="1500"/>
-        <param name="max_steps"                    value="1000"/>
-        <param name="max_episodes"                 value="5000"/>
-        <param name="replay_batch_size"            value="128"/>
-        <param name="cuda_empty_cache_interval"    value="400"/>
-        <param name="best_score_window"            value="50"/>
-        <param name="min_episodes_for_best"        value="100"/>
-        <param name="best_improve_delta"           value="2.0"/>
-        <param name="early_stop_patience"          value="0"/>
+        <param name="random_action_steps" value="1500"/>
+        <param name="max_steps" value="1000"/>
+        <param name="max_episodes" value="5000"/>
+        <param name="replay_batch_size" value="128"/>
+        <param name="cuda_empty_cache_interval" value="400"/>
+        <param name="best_score_window" value="50"/>
+        <param name="min_episodes_for_best" value="100"/>
+        <param name="best_improve_delta" value="2.0"/>
+        <param name="early_stop_patience" value="0"/>
 
         <!-- 动作空间参数：网络输出范围定义 -->
-        <param name="action_v_max"                 value="0.65"/>
-        <param name="action_w_max"                 value="1.5"/>
-        <param name="random_v_min"                 value="0.10"/>
-        <param name="random_w_max"                 value="0.9"/>
+        <param name="action_v_max" value="0.65"/>
+        <param name="action_w_max" value="1.5"/>
+        <param name="random_v_min" value="0.10"/>
+        <param name="random_w_max" value="0.9"/>
 
-        <!-- 噪声参数：探索噪声配置（已迁移至自适应OU噪声） -->
-        <param name="action_noise"                 value="0.12"/>
-        <param name="policy_noise"                 value="0.25"/>
-        <param name="policy_noise_clip"            value="0.35"/>
+        <!-- 噪声参数：探索噪声配置 -->
+        <param name="action_noise" value="0.12"/>
+        <param name="policy_noise" value="0.25"/>
+        <param name="policy_noise_clip" value="0.35"/>
 
         <!-- 网络结构参数：Actor/Critic隐藏层维度 -->
-        <param name="actor_fc1_dim"                value="512"/>
-        <param name="actor_fc2_dim"                value="256"/>
-        <param name="critic_fc1_dim"               value="512"/>
-        <param name="critic_fc2_dim"               value="256"/>
+        <param name="actor_fc1_dim" value="512"/>
+        <param name="actor_fc2_dim" value="256"/>
+        <param name="critic_fc1_dim" value="512"/>
+        <param name="critic_fc2_dim" value="256"/>
 
         <!-- I/O控制参数：日志与模型保存 -->
-        <param name="save_interval"                value="20"/>
-        <param name="plot_interval"                value="20"/>
-        <param name="step_log"                     value="false"/>
-        <param name="step_log_interval"            value="20"/>
+        <param name="save_interval" value="20"/>
+        <param name="plot_interval" value="20"/>
+        <param name="step_log" value="false"/>
+        <param name="step_log_interval" value="20"/>
     </node>
 
     <!-- RViz 可视化 -->
-    <node pkg="rviz" type="rviz" name="limorl_rviz" args="-d $(find limoRL)/config/limorl.rviz" output="screen"/>
+    <node pkg="rviz"
+          type="rviz"
+          name="limorl_rviz"
+          args="-d $(find limoRL)/config/limorl.rviz"
+          output="screen"/>
 
     <!-- 可选辅助节点：单元测试节点（默认禁用） -->
-    <!-- <node pkg="limoRL" name="unit_1" type="unit_1.py" output="screen"/> -->
+    <!--
+    <node pkg="limoRL"
+          name="unit_1"
+          type="unit_1.py"
+          output="screen"/>
+    -->
 </launch>
